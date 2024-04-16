@@ -1,0 +1,45 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Description: Plantilla de CloudFormation para desplegar una aplicación serverless
+
+Parameters:
+  AppEnv:
+    Type: String
+    Default: dev
+
+Resources:
+  # ------------- Lambda functions -------------
+  MyLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: my-lambda-function-ayte
+      CodeUri: src/lambda-code/
+      Handler: app.handler
+      Runtime: nodejs20.x
+      Architectures:
+        - x86_64
+      Timeout: 3
+      MemorySize: 128
+      Environment:
+        Variables:
+          MY_VARIBLE: !Ref AppEnv
+
+  # ------------- DynamoDB -------------
+  MyDynamoDBTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      TableName: my-dynamodb-table-ayte
+      PrimaryKey:
+        Name: id
+        Type: String
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+
+  # ------------- S3 -------------
+  MyBucketS3:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: my-bucket-s3-ayte
+      AccessControl: Private
+
